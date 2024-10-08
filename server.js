@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const port = 5000;
 
+require('dotenv').config();
+require('./config/db.js')();
+
 app.set('view engine', 'html');
 app.use(express.static(__dirname + '/views/'));
 
