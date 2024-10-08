@@ -7,6 +7,7 @@ require('./config/db.js')();
 
 app.set('view engine', 'html');
 app.use(express.static(__dirname + '/views/'));
+app.use(express.json());
 
 app.use('/api/users', require('./routes/users'));
 app.use('/api/festivals', require('./routes/festivals'));
