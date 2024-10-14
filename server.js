@@ -11,6 +11,7 @@ app.use(express.json());
 
 app.use('/api/users', require('./routes/users'));
 app.use('/api/festivals', require('./routes/festivals'));
+app.use('/api/stages', require('./routes/stages'));
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
