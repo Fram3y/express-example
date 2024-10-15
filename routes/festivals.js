@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {loginRequired} = require('../controllers/user.controller.js')
 
 const {
     readOne, 
@@ -10,7 +11,7 @@ const {
 } = require('../controllers/festival.controller.js');
 
 router.get('/', readAll);
-router.get('/:id', readOne);
+router.get('/:id', loginRequired, readOne);
 router.post('/', createData);
 router.put('/:id', updateData);
 router.delete('/:id', deleteData);

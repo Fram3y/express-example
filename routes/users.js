@@ -2,18 +2,12 @@ const express = require('express');
 const router = express.Router();
 
 const {
-    readOne, 
-    readAll, 
-    createData,
-    updateData,
-    deleteData
+    register,
+    login
 } = require('../controllers/user.controller.js');
 
-router.get('/', readAll);
-router.get('/:id', readOne);
-router.post('/', createData);
-router.put('/:id', updateData);
-router.delete('/:id', deleteData);
+router.post('/register', register);
+router.post('/login', login);
 
 module.exports = router;
 

@@ -1,57 +1,59 @@
-const readAll = (req, res) => {
-    res.status(200).json({
-        "message": "All User Retrieved"
-    });
-    // console.log("hello")
-}
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const User = require('../models/user.model');
 
-const readOne = (req, res) => {
-    let id = req.params.id;
-
-    res.status(200).json({
-        "message": `User with ${id} has been retrieved`
-    });
-}
-
-const createData = (req, res) => {
+const register = (req, res) => {
     console.log(req.body);
 
-    if(data.password.length < 6){
-        res.status(201).json({
-            "message": "User password must be more than 6 characters"
+    let newUser = new User(req.body);
+    newUser.password = bcrypt.hashSync(req.body.password, 10);
+
+    newUser.save()
+           .then(data => {
+            data.password = undefined;
+            return res.status(201).json(data);
+           })
+           .catch(err => {
+            return res.status(400).json({
+                message: err
+            });
+           });
+}
+
+const login = (req, res) => {
+    User.findOne({email: req.body.email})
+        .then(user => {
+            if(!user){
+                res.status(401).json({
+                    message: `Authentication failed because this user does not exist`
+                });
+            };
+
+            return res.status(200).json({
+                token: jwt.sign({
+                    email: user.email,
+                    full_name: user.full_name,
+                    _id: user._id
+                }, 'mykey')
+            });
+        })
+        .catch(err => {
+            res.status(500).json(err);
+        });
+}
+
+const loginRequired = (req, res, next) => {
+    if(req.user){
+        next();
+    } else {
+        return res.status(401).json({
+            message: `Unauthorised User`
         })
     }
-
-    data.password = undefined;
-    
-    let data = req.body;
-    res.status(201).json({
-        "data": data
-    })
-};
-
-const updateData = (req, res) => {
-    let id = req.params.id;
-    let data = req.body;
-
-    data.id = id;
-    //connect to the DB and check if user exists
-    //check if data is valid, if yes update user with :id
-
-    res.status(200).json({
-        "message": `You updated user with id: ${id}`,
-        "data": data
-    });
-};
-
-const deleteData = (req, res) => {
-    let id = req.params.id;
-};
+}
 
 module.exports = {
-    readAll, 
-    readOne,
-    createData,
-    updateData,
-    deleteData
+    register, 
+    login,
+    loginRequired,
 };
