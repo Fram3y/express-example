@@ -23,7 +23,7 @@ const register = (req, res) => {
 const login = (req, res) => {
     User.findOne({email: req.body.email})
         .then(user => {
-            if(!user){
+            if(!user || !user.comparePassword(req.body.password)){
                 res.status(401).json({
                     message: `Authentication failed because this user does not exist`
                 });
@@ -34,7 +34,7 @@ const login = (req, res) => {
                     email: user.email,
                     full_name: user.full_name,
                     _id: user._id
-                }, 'mykey')
+                }, process.env.JWT_SECRET)
             });
         })
         .catch(err => {

@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const app = express();
 const port = 5000;
 
@@ -23,7 +24,7 @@ app.use((req, res, next) => {
     let authHeader = req.headers?.authorization?.split(' ');
     
     if(req.headers?.authorization && authHeader[0] === 'Bearer'){
-        jwt.verify(authHeader[1], 'mykey',  (err, decoded) => {
+        jwt.verify(authHeader[1], process.env.JWT_SECRET,  (err, decoded) => {
             if(err) req.user = undefined;
             req.user = decoded;
             next();
